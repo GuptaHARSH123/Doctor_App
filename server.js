@@ -2,6 +2,7 @@ const expres = require('express');
 const colors = require("colors")
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const cors = require('cors');
 const ConnectDB = require('./config/db');
  
  
@@ -9,6 +10,10 @@ dotenv.config();
 
 ConnectDB();
 const app = expres()
+app.use(cors({
+  origin: "*",  
+  methods: ["POST", "GET"]
+}));
 
 app.use(expres.json())
 app.use(morgan("dev"))

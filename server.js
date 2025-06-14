@@ -12,7 +12,7 @@ ConnectDB();
 const app = expres()
 app.use(cors({
     origin: "*", // or specific origin like 'http://localhost:3000'
-    methods: ["POST", "GET" , "PUT" , "DELET"]
+    methods: ["POST", "GET" , "PUT" , "DELETE"]
   }));
 
 app.use(expres.json())

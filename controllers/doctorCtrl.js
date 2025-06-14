@@ -96,43 +96,35 @@ const authController = async (req, res) => {
     });
   }
 };
-const getDoctorList = async (req, res) => {
+const searchDoctor = async (req, res) => {
   try {
-    const { specialization } = req.query;  
-    
-    let query = {}; 
-    if (specialization) {
-      query.specialization = { $regex: new RegExp(specialization, "i") };  
+    const { query } = req.query;
+
+    let doctors;
+
+    if (!query || query.trim() === '') {
+      // No search query → return all doctors
+      doctors = await Doctor.find();
+    } else {
+      // Search query exists → filter by name or specialization (case-insensitive)
+      const regex = new RegExp(query, 'i');
+      doctors = await Doctor.find({
+        $or: [{ name: regex }, { specialization: regex }],
+      });
     }
 
-    
-    const doctors = await Doctor.find(query);
-
-   
-    if (doctors.length === 0) {
-      return res.status(404).json({ message: "No doctors found." });
-    }
-
-     
-    res.status(200).json({
-      success: true,
-      data: doctors,
-    });
-  } catch (error) {
-    console.error("Error fetching doctors:", error);
-    res.status(500).json({
-      success: false,
-      message: 'An error occurred while fetching doctors.',
-      error: error.message,
-    });
+    res.status(200).json({ success: true, data: doctors });
+  } catch (err) {
+    console.error('Error in searchDoctor:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 };
+
  
 
 module.exports = { 
   registerController, 
   loginController, 
   authController,
-  getDoctorList,
-  
+  searchDoctor
 };

@@ -3,12 +3,17 @@ const colors = require("colors")
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const ConnectDB = require('./config/db');
+const cors = require('cors');
  
  
 dotenv.config();
 
 ConnectDB();
 const app = expres()
+app.use(cors({
+    origin: "*", // or specific origin like 'http://localhost:3000'
+    methods: ["POST", "GET" , "PUT" , "DELET"]
+  }));
 
 app.use(expres.json())
 app.use(morgan("dev"))
